@@ -1,7 +1,8 @@
-import SQLite, {SQLiteDatabase} from 'react-native-sqlite-storage';
+// @ts-ignore
+import SQLite, {SQLiteDatabase} from 'react-native-sqlcipher-storage';
 
 // Enable debug mode
-SQLite.DEBUG(true);
+// SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
 // Define the type for a Task
@@ -9,10 +10,10 @@ export interface Task {
   id: number;
   title: string;
   description: string;
-  completed: number; // 0 for incomplete, 1 for complete
+  completed: number;
 }
 
-let db: SQLiteDatabase | null = null;
+let db: SQLiteDatabase;
 
 // Initialize and open the database
 export const getDatabase = async (): Promise<SQLiteDatabase> => {
@@ -20,27 +21,21 @@ export const getDatabase = async (): Promise<SQLiteDatabase> => {
     db = await SQLite.openDatabase({
       name: 'TasksDB.db',
       location: 'default',
+      key: 'password',
     });
     console.log('Database opened successfully');
-    return db;
   } catch (error) {
     console.error('Error opening database: ', error);
     throw error;
   }
+  return db;
 };
 
 // Create the Tasks table
-export const createTable = async (): Promise<void> => {
+export const createTable = async (query: string) => {
   try {
     const dbInstance = await getDatabase();
-    await dbInstance.executeSql(`
-      CREATE TABLE IF NOT EXISTS Tasks (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        description TEXT,
-        completed INTEGER DEFAULT 0
-      );
-    `);
+    await dbInstance.executeSql(query);
     console.log('Table created successfully');
   } catch (error) {
     console.error('Error creating table: ', error);
@@ -48,7 +43,7 @@ export const createTable = async (): Promise<void> => {
 };
 
 // Fetch all tasks
-export const fetchTasks = async (): Promise<Task[]> => {
+export const fetchTasks = async (query): Promise<Task[]> => {
   try {
     const dbInstance = await getDatabase();
     const [results] = await dbInstance.executeSql('SELECT * FROM Tasks;');
@@ -109,18 +104,30 @@ export const deleteTask = async (id: number): Promise<void> => {
   }
 };
 
-// Toggle task completion
 export const toggleComplete = async (
   id: number,
   completed: boolean,
 ): Promise<void> => {
+  console.log('Toggling task completion, id:', id, 'completed:', completed);
+
   try {
     const dbInstance = await getDatabase();
-    await dbInstance.executeSql(
+
+    // Convert the boolean completed status to 1 (true) or 0 (false)
+    const updatedStatus = !completed ? 1 : 0;
+
+    // Update the task status in the database
+    const result = await dbInstance.executeSql(
       'UPDATE Tasks SET completed = ? WHERE id = ?;',
-      [completed ? 1 : 0, id],
+      [updatedStatus, id],
     );
-    console.log('Task completion toggled successfully');
+
+    // Check if the update was successful (i.e., the task exists)
+    if (result[0].rowsAffected > 0) {
+      console.log('Task completion toggled successfully');
+    } else {
+      console.error('No task found with the given id:', id);
+    }
   } catch (error) {
     console.error('Error toggling task completion: ', error);
   }

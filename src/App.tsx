@@ -3,6 +3,7 @@ import React from 'react';
 
 import {Text, View} from 'react-native';
 import TaskList from './screen/TaskList';
+import PushNotification from './screen/PushNotification';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       </View>
       <View style={{flex: 1, padding: 16}}>
         <TaskList />
+        {/* <PushNotification /> */}
       </View>
     </View>
   );

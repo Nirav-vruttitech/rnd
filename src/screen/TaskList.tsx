@@ -1,22 +1,23 @@
 import React, {useEffect, useState} from 'react';
 import {
-  View,
-  Text,
   FlatList,
+  StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
+  View,
 } from 'react-native';
 
 import {
-  createTable,
-  fetchTasks,
-  addTask,
-  updateTask,
-  deleteTask,
-  toggleComplete,
   Task,
-} from '../config/database';
+  addTask,
+  createTable,
+  deleteTask,
+  fetchTasks,
+  toggleComplete,
+  updateTask,
+} from '../service/database';
+import {createTodoTbl} from '../query/todo';
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -27,7 +28,7 @@ const TaskList: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      await createTable();
+      await createTable(createTodoTbl);
       await loadTasks();
     })();
   }, []);
@@ -72,8 +73,8 @@ const TaskList: React.FC = () => {
     id: number,
     completed: number,
   ): Promise<void> => {
-    await toggleComplete(id, completed === 1); // Convert 1/0 to true/false
-    loadTasks();
+    await toggleComplete(id, completed === 1);
+    await loadTasks();
   };
 
   // Handle task edit
@@ -150,11 +151,18 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'black',
-    padding: 12,
+    padding: 5,
     borderRadius: 8,
     marginVertical: 12,
   },
-  buttonText: {color: '#fff', textAlign: 'center', fontWeight: 'bold'},
+  buttonText: {
+    color: '#fff',
+    backgroundColor: '#000',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    padding: 5,
+    borderRadius: 4,
+  },
   taskContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -167,7 +175,7 @@ const styles = StyleSheet.create({
   taskTitle: {fontSize: 16, fontWeight: 'bold'},
   taskDescription: {fontSize: 14, color: '#555'},
   taskCompleted: {textDecorationLine: 'line-through', color: 'gray'},
-  buttonsContainer: {flexDirection: 'row', marginLeft: 10},
+  buttonsContainer: {flexDirection: 'row', marginLeft: 10, gap: 10},
 });
 
 export default TaskList;
