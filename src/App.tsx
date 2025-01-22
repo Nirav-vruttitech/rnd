@@ -19,8 +19,8 @@ export default function App() {
         </Text>
       </View>
       <View style={{flex: 1, padding: 16}}>
-        <TaskList />
-        {/* <PushNotification /> */}
+        {/* <TaskList /> */}
+        <PushNotification />
       </View>
     </View>
   );
