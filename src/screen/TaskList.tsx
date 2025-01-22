@@ -13,11 +13,11 @@ import {
   addTask,
   createTable,
   deleteTask,
-  fetchTasks,
+  fetchData,
   toggleComplete,
   updateTask,
 } from '../service/database';
-import {createTodoTbl} from '../query/todo';
+import {todo_table, push_notification} from '../query/todo';
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -28,14 +28,14 @@ const TaskList: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      await createTable(createTodoTbl);
+      await createTable(todo_table.createTbl);
       await loadTasks();
     })();
   }, []);
 
   // Load tasks from the database
   const loadTasks = async (): Promise<void> => {
-    const tasksFromDb = await fetchTasks();
+    const tasksFromDb = await fetchData(todo_table.fetchData);
     setTasks(tasksFromDb);
   };
 
