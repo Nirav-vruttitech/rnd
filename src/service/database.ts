@@ -43,10 +43,10 @@ export const createTable = async (query: string) => {
 };
 
 // Fetch all tasks
-export const fetchTasks = async (query): Promise<Task[]> => {
+export const fetchData = async (query: string): Promise<any[]> => {
   try {
     const dbInstance = await getDatabase();
-    const [results] = await dbInstance.executeSql('SELECT * FROM Tasks;');
+    const [results] = await dbInstance.executeSql(query);
     const tasks: Task[] = [];
     for (let i = 0; i < results.rows.length; i++) {
       tasks.push(results.rows.item(i));
@@ -72,6 +72,19 @@ export const addTask = async (
     console.log('Task added successfully');
   } catch (error) {
     console.error('Error adding task: ', error);
+  }
+};
+
+export const insertData = async (
+  query: string,
+  array: Array<any>,
+): Promise<void> => {
+  try {
+    const dbInstance = await getDatabase();
+    await dbInstance.executeSql(query, array);
+    console.log('Data Is Add Successfully');
+  } catch (error) {
+    console.log('error: ', error);
   }
 };
 
