@@ -107,10 +107,13 @@ export const updateTask = async (
 };
 
 // Delete a task
-export const deleteTask = async (id: number): Promise<void> => {
+export const deleteTask = async (
+  id: number,
+  tableName: string,
+): Promise<void> => {
   try {
     const dbInstance = await getDatabase();
-    await dbInstance.executeSql('DELETE FROM Tasks WHERE id = ?;', [id]);
+    await dbInstance.executeSql(`DELETE FROM ${tableName} WHERE id = ?;`, [id]);
     console.log('Task deleted successfully');
   } catch (error) {
     console.error('Error deleting task: ', error);

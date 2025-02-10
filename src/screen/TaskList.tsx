@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 
+import {todo_table} from '../query/todo';
 import {
   Task,
   addTask,
@@ -17,7 +18,6 @@ import {
   toggleComplete,
   updateTask,
 } from '../service/database';
-import {todo_table, push_notification} from '../query/todo';
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -64,7 +64,7 @@ const TaskList: React.FC = () => {
 
   // Delete a task
   const handleTaskDelete = async (id: number): Promise<void> => {
-    await deleteTask(id);
+    await deleteTask(id, 'Tasks');
     loadTasks();
   };
 
@@ -140,7 +140,7 @@ const TaskList: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {flex: 1, padding: 16},
   inputContainer: {marginBottom: 16},
   input: {

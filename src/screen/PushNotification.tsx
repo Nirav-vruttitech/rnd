@@ -6,11 +6,10 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import {createTable, fetchData, insertData} from '../service/database';
 import {push_notification} from '../query/todo';
+import {createTable, fetchData, insertData} from '../service/database';
 
 const PushNotification = () => {
   const [notificationResponse, setNotificationResponse] = useState<any[]>([]);
@@ -79,7 +78,6 @@ const PushNotification = () => {
     })();
   }, []);
 
-  // Set up background notification listener (optional)
   useEffect(() => {
     const unsubscribe = notifee.onForegroundEvent(async ({type, detail}) => {
       console.log('Foreground event received:', type, detail);
@@ -87,9 +85,9 @@ const PushNotification = () => {
       if (type === EventType.ACTION_PRESS) {
         const {pressAction} = detail;
         if (pressAction && pressAction.id === 'yes-action') {
-          await insertData(push_notification.inserDara, [1, new Date()]);
+          await insertData(push_notification.insertData, [1, new Date()]);
         } else if (pressAction && pressAction.id === 'no-action') {
-          await insertData(push_notification.inserDara, [0, new Date()]);
+          await insertData(push_notification.insertData, [0, new Date()]);
         }
       }
     });

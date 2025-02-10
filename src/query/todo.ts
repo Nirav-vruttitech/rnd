@@ -11,5 +11,5 @@ export const push_notification = {
     notification_time TEXT NOT NULL
     );`,
   fetchResponseNotification: `SELECT * FROM notification`,
-  inserDara: `Insert into notification (response_status, notification_time) values (?,?);`,
+  insertData: `Insert into notification (response_status, notification_time) values (?,?);`,
 };
